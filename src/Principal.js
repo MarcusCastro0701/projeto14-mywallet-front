@@ -12,7 +12,6 @@ export default function Principal(props) {
   const navigate = useNavigate();
 
   const [bool, setBool] = useState(true)
-  const [count, setCount] = useState(0)
 
 
   function vaiParaEntrada() {
@@ -76,7 +75,7 @@ export default function Principal(props) {
   }, []);
 
   
-
+  console.log(bool, "bool da cor do saldo")
   return (
     <Engloba>
       <Topo>
@@ -88,14 +87,14 @@ export default function Principal(props) {
       <Englobameio>
 
         <Meio>
-          <Listagem resposta={props.resposta} setcount={setCount} count={count} setbool={setBool}/>
+          <Listagem resposta={props.resposta} setcount={props.setcount} count={props.count} setbool={setBool}/>
         </Meio>
 
       </Englobameio>
 
       <Baixo>
         <P1 onClick={vaiParaEntrada}>Nova entrada +</P1>
-        <Saldo bool={bool}>Saldo em R$: {count.toFixed(2)}</Saldo>
+        <Saldo bool={bool}>Saldo em R$: {props.count.toFixed(2)}</Saldo>
         <P2 onClick={vaiParaSaida}>Nova saída -</P2>
       </Baixo>
 

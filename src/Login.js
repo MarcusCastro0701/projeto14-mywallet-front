@@ -32,7 +32,7 @@ export default function Login(props){
             })
 
             promise.catch((err) => {
-                window.alert('Usuário não encontrado')
+                window.alert('Usuário não encontrado ou já está logado')
                 console.log(err)
                 setBoolButton(false)
             })

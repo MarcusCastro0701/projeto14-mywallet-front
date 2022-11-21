@@ -21,7 +21,7 @@ export default function Entrada(props){
         event.preventDefault();
         setBoolButton(true)
 
-        const URL = "http://localhost:5000/valor"
+        const URL = "http://localhost:5000/wallet"
 
         const config = {
             headers: {

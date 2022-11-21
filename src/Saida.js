@@ -14,14 +14,14 @@ export default function Saida(props){
     function handleForm(e) {
         const { name, value } = e.target
         setForm({ ...form, [name]: value })
-        console.log(form)
+        
     }
 
     function enviaValor(event) {
         event.preventDefault();
         setBoolButton(true)
 
-        const URL = "http://localhost:5000/valor"
+        const URL = "http://localhost:5000/wallet"
 
         const config = {
             headers: {

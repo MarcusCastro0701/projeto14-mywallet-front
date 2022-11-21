@@ -7,6 +7,7 @@ import { Link, useNavigate} from 'react-router-dom';
 export default function Listagem(props){
 
     if(props.resposta.length === 0){
+        props.setcount(parseFloat(0))
         return(
             <Aviso>
                 Nenhuma entrada ou saída registrada
@@ -19,9 +20,9 @@ export default function Listagem(props){
 
     function verifica(obj){
         if(obj.bool === true){
-            contadorLocal += obj.value
+            contadorLocal += parseFloat(obj.value)
         }else(
-            contadorLocal -= obj.value
+            contadorLocal -= parseFloat(obj.value)
         )
         
     }
@@ -29,9 +30,13 @@ export default function Listagem(props){
     props.resposta.map(item => verifica(item))
 
     
-    props.setcount(Number(contadorLocal))
-    if(props.count < 0){
+    props.setcount(parseFloat(contadorLocal))
+
+
+    if(parseFloat(props.count) < 0){
         props.setbool(false)
+    }else{
+        props.setbool(true)
     }
 
 
