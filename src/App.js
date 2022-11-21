@@ -13,6 +13,10 @@ import Saida from "./Saida"
 
 export default function App(){
 
+    const [token, setToken] = useState('')
+    const [resposta, setResposta] = useState('')
+    const [name, setName] = useState('')
+
     return(
         <BrowserRouter>
 
@@ -20,11 +24,11 @@ export default function App(){
 
             <Routes>
 
-            <Route path="/" element={<Login/>}/>
+            <Route path="/" element={<Login setname={setName} settoken={setToken}/>}/>
             <Route path="/cadastro" element={<Cadastro/>}/>
-            <Route path="/principal" element={<Principal/>}/>
-            <Route path="/entrada" element={<Entrada/>}/>
-            <Route path="/saida" element={<Saida/>}/>
+            <Route path="/principal" element={<Principal token={token} resposta={resposta} settoken={setToken} setname={setName} setresposta={setResposta} name={name}/>}/>
+            <Route path="/entrada" element={<Entrada token={token}/>}/>
+            <Route path="/saida" element={<Saida token={token}/>}/>
 
             </Routes>
 

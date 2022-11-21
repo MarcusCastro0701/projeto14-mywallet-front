@@ -5,22 +5,45 @@ import { Link, useNavigate} from 'react-router-dom';
 
 
 
-export default function Entrada(){
+export default function Entrada(props){
 
     const [boolButton, setBoolButton] = useState(false)
-    const [form, setForm] = useState({ value: "", description: "", info: true })
+    const [form, setForm] = useState({ value: "", description: "", bool: true })
     const navigate = useNavigate();
 
     function handleForm(e) {
         const { name, value } = e.target
         setForm({ ...form, [name]: value })
-        console.log(form)
+        
     }
 
-    function adicionaEntrada(event){
+    function enviaValor(event) {
         event.preventDefault();
-        navigate("/principal")
+        setBoolButton(true)
+
+        const URL = "http://localhost:5000/valor"
+
+        const config = {
+            headers: {
+                Authorization: `Bearer ${props.token}`
+            }
+        }
+
+        const body = form;
+        console.log(body, "body que está sendo enviado pelo post /entrada")
+        const promise = axios.post(URL, body, config)
+
+        promise.then((res) => {
+            navigate("/principal")
+        })
+
+        promise.catch((err) => {
+            window.alert('Informações não foram preencidas corretamente')
+            console.log(err)
+            setBoolButton(false)
+        })
     }
+    
 
     return (
         <Engloba>
@@ -28,8 +51,8 @@ export default function Entrada(){
                 <p>Nova Entrada</p>              
             </Topo>
 
-            <Form onSubmit={adicionaEntrada}>
-                <input disabled={boolButton} onChange={handleForm} name="value" required type="numbver" placeholder="valor"></input>
+            <Form onSubmit={enviaValor}>
+                <input disabled={boolButton} onChange={handleForm} name="value" required type="number" step="0.01" min="0" placeholder="valor"></input>
                 <input disabled={boolButton} onChange={handleForm} name="description" required type="text" placeholder="descrição"></input>
                 <button disabled={boolButton} type="submit" >
                     {(boolButton === false) ? "Adicionar entrada" : <DotWrapper> <Dot delay="0s" /> <Dot delay=".1s" /> <Dot delay=".2s" /> </DotWrapper>}

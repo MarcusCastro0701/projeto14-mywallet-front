@@ -9,7 +9,7 @@ import { Link, useNavigate} from 'react-router-dom';
 
 export default function Cadastro(){
 
-    const [form, setForm] = useState({ email: "", name: "", image: "", password: "" })
+    const [form, setForm] = useState({ name: "", email: "", password: "", passwordConfirm: ""})
     const [boolButton, setBoolButton] = useState(false)
     const navigate = useNavigate();
 
@@ -17,22 +17,54 @@ export default function Cadastro(){
         e.preventDefault();
         const {name, value} = e.target
         setForm({...form, [name]: value})
+        
       }
+
+    function fazerCadastro(event) {
+        event.preventDefault();
+        setBoolButton(true)
+        console.log(form.password, form.passwordConfirm, "password e passwordConfirm")
+        if (form.password === form.passwordConfirm) {
+            const URL = "http://localhost:5000/sign-up"
+            
+            const body = {
+                name: form.name,
+                email: form.email,
+                password: form.password
+            }
+            console.log(body, "body que está sendo enviado pelo post /sign-up")
+            const promise = axios.post(URL, body)
+
+            promise.then((res) => {
+                navigate("/")
+            })
+
+            promise.catch((err) => {
+                alert(err)
+                console.log(err)
+                setBoolButton(false)
+            })
+        }else{
+            window.alert("As senhas não equivalem!")
+            setBoolButton(false)
+        }
+
+    }
 
 
     return (
         <Fundo>
             <Titulo>MyWallet</Titulo>
-            <Form>
+            <Form onSubmit={fazerCadastro}>
                 <input onChange={handleForm} name="name" required type="text" placeholder="nome"></input>
                 <input onChange={handleForm} name="email" required type="email" placeholder="email"></input>
                 <input onChange={handleForm} name="password" required type="password" placeholder="senha"></input>
-                <input onChange={handleForm} name="password" required type="password" placeholder="confirmar senha"></input>
+                <input onChange={handleForm} name="passwordConfirm" required type="password" placeholder="confirmar senha"></input>
                 <button disabled={boolButton} type="submit" >
                     {(boolButton === false) ? "Cadastrar" : <DotWrapper> <Dot delay="0s" /> <Dot delay=".1s" /> <Dot delay=".2s" /> </DotWrapper>}
                 </button>
             </Form>
-            <p>Já tem uma conta? Faça login!</p>
+            <Link to={`/`}> <p>Já tem uma conta? Faça login agora!</p> </Link>
         </Fundo>
     )
 

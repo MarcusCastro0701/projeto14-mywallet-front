@@ -2,45 +2,107 @@ import styled, { keyframes } from "styled-components";
 import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link, useNavigate} from 'react-router-dom';
+import Listagem from './Listagem'
 
 
 
 
-export default function Principal(){
+export default function Principal(props) {
 
-    return (
-        <Engloba>
-            <Topo>
-                <Elementostopo>Olá, usuário</Elementostopo>
-                <p>MY WALLET</p>
-                <Elementostopo>Sair</Elementostopo>
-            </Topo>
+  const navigate = useNavigate();
 
-            <Englobameio>
+  const [bool, setBool] = useState(true)
+  const [count, setCount] = useState(0)
 
-                <Meio>
-                    <Aviso>Ainda não foi inserida nenhuma entrada ou saída</Aviso>
-                    <Item>
-                        <Itemesquerda>
-                            <Data>30/11</Data>
-                            <p>Salário</p>
-                        </Itemesquerda>
-                        <Itemdireita>547,50</Itemdireita>
-                    </Item>   
-                </Meio>
 
-            </Englobameio>
+  function vaiParaEntrada() {
+    navigate("/entrada")
+  }
 
-            <Baixo>
-                <P1>Nova entrada +</P1>
-                <Saldo>Saldo: 4000,00</Saldo>
-                <P2>Nova saída -</P2>
-            </Baixo>
+  function vaiParaSaida() {
+    navigate("/saida")
+  }
 
+  function sair(event) {
+    event.preventDefault();
+    
+    
+        const URL = "http://localhost:5000/sair"
+        const config = {
+            headers: {
+                Authorization: `Bearer ${props.token}`
+            }
+        }
+        
+        const promise = axios.delete(URL, config)
+
+        promise.then((res) => {
+            props.settoken('')
+            props.setname('')
+            props.setresposta('')
+            navigate("/")
+        })
+
+        promise.catch((err) => {
+            window.alert('Erro ao sair da sessão')
+            console.log(err)
             
-        </Engloba>
+        })
+}
 
-    )
+  useEffect(() => {
+
+
+    const URL = "http://localhost:5000/wallet"
+
+    const config = {
+      headers: {
+        Authorization: `Bearer ${props.token}`
+      }
+    }
+    const requisicao = axios.get(URL, config);
+
+
+    requisicao.then((res) => {
+      props.setresposta(res.data)
+      console.log(res, "resposta do servidor no get /wallet")
+    });
+
+    requisicao.catch((err) => {
+      console.log("deu erro!")
+      console.log(err)
+    })
+
+  }, []);
+
+  
+
+  return (
+    <Engloba>
+      <Topo>
+        <Elementostopo>Olá, {props.name}</Elementostopo>
+        <p>MyWallet</p>
+        <Elementostopo onClick={sair}>Sair</Elementostopo>
+      </Topo>
+
+      <Englobameio>
+
+        <Meio>
+          <Listagem resposta={props.resposta} setcount={setCount} count={count} setbool={setBool}/>
+        </Meio>
+
+      </Englobameio>
+
+      <Baixo>
+        <P1 onClick={vaiParaEntrada}>Nova entrada +</P1>
+        <Saldo bool={bool}>Saldo em R$: {count.toFixed(2)}</Saldo>
+        <P2 onClick={vaiParaSaida}>Nova saída -</P2>
+      </Baixo>
+
+
+    </Engloba>
+
+  )
 
 }
 
@@ -52,7 +114,6 @@ position: relative;
 padding-top: 120px;
 
 `
-
 const Topo = styled.div`
 position: fixed;
 z-index: 1;
@@ -71,7 +132,9 @@ p{
       }
 }
 `
-const Elementostopo = styled.div`
+const Elementostopo = styled.button`
+background-color: orange;
+border: none;
 height: 70%;
 width: 20%;
 display: flex;
@@ -91,7 +154,6 @@ font-style: 'Raleway';
     width: 25%;
   }
 `
-
 const Englobameio = styled.div`
 width: 100%;
 height: 600px;
@@ -102,7 +164,6 @@ justify-content: center;
   }
 
 `
-
 const Meio = styled.div`
 width: 90%;
 border-radius: 8px;
@@ -116,31 +177,6 @@ align-items: center;
 
 
 `
-const Item = styled.div`
-width: 95%;
-height: 20px;
-margin-bottom: 15px;
-display: flex;
-flex-direction: row;
-justify-content: space-between;
-align-items: center;
-`
-const Itemesquerda = styled.div`
-width: 40%;
-height: 100%;
-display: flex;
-align-items: center;
-flex-direction: row;
-`
-const Data = styled.p`
-color: lightgrey;
-font-weight: 450;
-margin-right: 10px;
-`
-const Itemdireita = styled.div`
-color: black;
-`
-
 const Baixo = styled.div`
 position: fixed;
 z-index: 1;
@@ -155,34 +191,39 @@ justify-content: space-around;
     justify-content: space-between;
   }
 `
-const P1 = styled.p`
+const P1 = styled.button`
 margin-left: 0px;
+background-color: orange;
+border-radius: 8px;
+width: 20%;
+height: 70%;
+font-weight: 700;
+@media (max-width: 425px) {
+    font-size: 80%;
+    
+  }
 @media (max-width: 485px) {
     margin-left: 20px;
   }
-@media (max-width: 425px) {
-    font-size: 80%;
-  }
+
 
 `
-const P2 = styled.p`
+const P2 = styled.button`
+background-color: orange;
+border-radius: 8px;
 margin-right: 0px;
+width: 20%;
+height: 70%;
+font-weight: 550;
 @media (max-width: 485px) {
     margin-right: 20px;
   }
 @media (max-width: 425px) {
     font-size: 80%;
-  }
+
+}
 `
 const Saldo = styled.p`
 font-weight: bold;
-color: green;
-`
-
-const Aviso = styled.p`
-font-family: 'Raleway';
-font-size: 80%;
-font-weight: 650;
-color: lightgrey;
-display: none;
+color: ${props => props.bool===true ? `green` : `red`};
 `

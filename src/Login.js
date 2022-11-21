@@ -3,7 +3,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import { Link, useNavigate} from 'react-router-dom';
 
-export default function Login(){
+export default function Login(props){
 
     const [boolButton, setBoolButton] = useState(false)
     const [form, setForm] = useState({ email: "", password: "" })
@@ -12,13 +12,33 @@ export default function Login(){
     function handleForm(e) {
         const { name, value } = e.target
         setForm({ ...form, [name]: value })
-        console.log(form)
+        
     }
 
-    function fazerLogin(event){
+    function fazerLogin(event) {
         event.preventDefault();
-        navigate("/principal")
+        setBoolButton(true)
+        
+            const URL = "http://localhost:5000/login"
+            
+            const body = form;
+            console.log(body, "body que está sendo enviado pelo post /login")
+            const promise = axios.post(URL, body)
+
+            promise.then((res) => {
+                props.settoken(res.data[0].token)
+                props.setname(res.data[0].name)
+                navigate("/principal")
+            })
+
+            promise.catch((err) => {
+                window.alert('Usuário não encontrado')
+                console.log(err)
+                setBoolButton(false)
+            })
     }
+
+    
 
     return (
         <Fundo>
@@ -30,7 +50,7 @@ export default function Login(){
                     {(boolButton === false) ? "Logar" : <DotWrapper> <Dot delay="0s" /> <Dot delay=".1s" /> <Dot delay=".2s" /> </DotWrapper>}
                 </button>
             </Form>
-            <p>Ainda não tem uma conta? Cadastre-se!</p>
+            <Link to={`/cadastro`}> <p>Ainda não tem uma conta? Cadastre-se!</p> </Link>
         </Fundo>
     )
 
